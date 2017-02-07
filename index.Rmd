@@ -250,6 +250,13 @@ diamonds_by_cut_stacked +
 ```
 
 
+# Let's experiment
+
+```{r}
+source('https://raw.githubusercontent.com/HoustonUseRs/intro-to-ggplot2/master/examples_from_cheatsheet.r')
+```
+
+
 # A layered grammar is powerful
 
 The full grammar consists of:
