@@ -2,25 +2,28 @@
 title: "Grammar of Graphics in R"
 output:
   revealjs::revealjs_presentation:
+      theme: serif
       highlight: pygments
       transition: fade
+      css: styles.css
 ---
 
+```{r load_ggplot, include = F}
+library(ggplot2)
+```
 # Semiology of Graphics
 
 ## *Jacques Bertin, 1967*
 
-![](./images/bertin.jpg)
-
-![](./images/bertin-cover.jpg)
+![](./images/bertin.jpg) ![](./images/bertin-cover.jpg)
 
 
 ## Retinal Values
 
+<div class="half-grid">
 ![](./images/bertin-variables.jpg)
-
-"Retinal values" include:
-
+</div>
+<div class="half-grid">
   * Position
   * Size
   * Shape
@@ -28,27 +31,27 @@ output:
   * Color
   * Orientation
   * Texture
+</div>
 
 ## Types of Imposition
 
+<div class="half-grid">
 ![](./images/bertin-imposition.jpg)
-
-"Types of imposition" include:
-
+</div>
+<div class="half-grid">
   * Arrangement
   * Rectilinear
   * Circular
   * Orthogonal
   * Polar
-
+</div>
 
 # The Grammar of Graphics
 
 ## *Leland Wilkinson, 1999*
 
-![](./images/wilkinson.jpg)
+![](./images/wilkinson.jpg) ![](./images/wilkinson-cover.jpg)
 
-![](./images/wilkinson-cover.jpg)
 
 ## Why a grammar?
 
@@ -58,11 +61,10 @@ output:
 
 ![](./images/pie.jpg)
 
-## How do we specify data to become graphics?
+## How do we transform data to graphics?
 
-![](./images/wilkinson-pie-1.jpg)
+![](./images/wilkinson-pie-1.jpg) ![](./images/wilkinson-pie-8.jpg)
 
-![](./images/wilkinson-pie-8.jpg)
 
 
 # A Layered Grammar of Graphics
@@ -77,10 +79,55 @@ output:
 
 ## The essence of a graphic
 
+* the **data**
+* the **mapping** of that **data** to **aes**thetic properties
+* the visual display of that data as **geom**etric elements
+
+## Basic plot
+
+```{r basic_plot}
+ggplot(
+    data = mpg,
+    mapping = aes(x = cty, y = hwy, color = factor(cyl))
+  ) +
+  geom_point()
+```
+
+## Layers enable more complex plots
+
+These elements form a layer:
+
   * **data**
-  * how data get mapped to **aes**thetic properties such as position, color, and size
-  * what **geom**etric shape is representing the data
+  * how data get mapped to **aes**thetic properties such as x, y, color, shape, and size
+  * what **geom**etric element is representing the data
   * any necessary **stat**istical operations, such as count for bar charts
   * how the data points are **position**ed
+
+## Layered plot
+
+```{r layered_plot}
+ggplot(data = mpg,  mapping = aes(x = cty, y = hwy, col = factor(cyl))) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dotted')
+```
+
+
+## Additional properties of the plot for flexibility
+
+  * **scale**s
+  * **coord**inates
+  * **facet**s
+
+## The possibilities are endless
+
+```{r complex_plot}
+ggplot(data = mpg,  mapping = aes(x = cty, y = hwy, col = factor(cyl))) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dotted') +
+  scale_color_manual(name = '# of Cyl', values = c('skyblue','royalblue', 'blue', 'navy')) +
+  coord_fixed(ratio = 1) +
+  facet_grid(.~class)
+```
+
 
 # [Let's get coding](https://houstonusers.github.io/intro-to-ggplot2/workshop.nb)

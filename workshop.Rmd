@@ -3,7 +3,7 @@ title: "Grammar of Graphics in R"
 output: html_notebook
 ---
 
-```{r load_ggplot, echo = F}
+```{r load_ggplot, include=FALSE}
 library(ggplot2)
 ```
 
@@ -29,7 +29,7 @@ mpg_plot <- ggplot(
     mapping = aes(x = cty, y = hwy)
   ) +
   geom_point(
-    mapping = aes(col = factor(cyl))
+    mapping = aes(color = factor(cyl))
   ) +
   geom_abline(
     slope = 1,
@@ -89,6 +89,7 @@ ggplot(
   geom_point()
 ```
 
+We can map the number of cylinders as a set of discrete values to color.
 
 ```{r step04_colors}
 ggplot(
@@ -96,7 +97,7 @@ ggplot(
     mapping = aes(x = cty, y = hwy)
   ) +
   geom_point(
-    mapping = aes(col = factor(cyl))
+    mapping = aes(color = factor(cyl))
   )
 ```
 
@@ -108,7 +109,7 @@ mpg_base_plot <- ggplot(
     mapping = aes(x = cty, y = hwy)
   ) +
   geom_point(
-    mapping = aes(col = factor(cyl))
+    mapping = aes(color = factor(cyl))
   )
 mpg_base_plot
 ```
@@ -176,6 +177,14 @@ We can further manipulate the plot using things like `facet_`.
 ```{r facets_example}
 mpg_plot +
   facet_grid(.~class)
+```
+
+# Let's experiment
+
+We can get the base plots from the ggplot cheatsheets on our computer by sourcing [this R script](https://houstonusers.github.io/intro-to-ggplot2/examples_from_cheatsheet).
+
+```{r eval = F}
+source('https://goo.gl/3EQSXt')
 ```
 
 
@@ -248,35 +257,32 @@ diamonds_by_cut_stacked +
 ```
 
 
-# Let's experiment
-
-We can get the base plots from the ggplot cheatsheets on our computer by sourcing [this R script](https://houstonusers.github.io/intro-to-ggplot2/examples_from_cheatsheet).
-
-```{r eval = F}
-source('https://goo.gl/3EQSXt')
-```
-
-
 # A layered grammar is powerful
 
 The full grammar consists of:
-  * The base plot with default data and mappings
-  * Any number of layers, each with
-    * Data
-      * plot's data by default
-    * Mapping
-      * plot's mappings by default
-    * Geom
-      * Sometimes defined by default by `stat_` if defined
-    * Stat
-      * Identity by default
-      * Sometimes defined by default by `geom_` if defined
-    * Position
-      * Optional, any adjustments necessary to geom positioning
+
+  * The base plot -- `ggplot` -- with default `data` and `mapping`s
+  * Any number of layers -- `geom_` or `stat_` -- each with
+    * `data`
+        * plot's `data` by default
+    * `mapping`
+        * plot's `mapping`s by default
+        * defined by `aes`thetics
+    * `geom_`
+        * Sometimes defined by default by `stat_` if defined
+    * `stat_`
+        * Identity by default
+        * Sometimes defined by default by `geom_` if defined
+    * `position`
+        * Optional, any adjustments necessary to geom positioning
+
 Additionally, the grammar includes control over the whole plot's
-  * Scales
-  * Coordinates
-  * Facets
+
+  * `scale`s
+    * to define how data values map `aes`thetic values
+  * `coordinate`s
+  * `facet`s
+    * subplots
 
 
 # Reading and Sources
@@ -284,8 +290,6 @@ Additionally, the grammar includes control over the whole plot's
 [A Layered Grammar of Graphics](http://vita.had.co.nz/papers/layered-grammar.pdf)
 
 [Mastering the Grammar](https://rpubs.com/flowertear/224424)
-
-[Introduction to R Graphics with `ggplot2`](http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html)
 
 [R for Data Science: Visualizing Data](http://r4ds.had.co.nz/data-visualisation.html#introduction-1)
 
@@ -296,6 +300,8 @@ Additionally, the grammar includes control over the whole plot's
 [ggplot2 Cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf)
 
 [Telling stories with data using the grammar of graphics](https://codewords.recurse.com/issues/six/telling-stories-with-data-using-the-grammar-of-graphics)
+
+[Introduction to R Graphics with ggplot2](http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html)
 
 [ggplot2 source code](https://github.com/tidyverse/ggplot2/tree/master/R)
 
