@@ -130,4 +130,4 @@ ggplot(data = mpg,  mapping = aes(x = cty, y = hwy, col = factor(cyl))) +
 ```
 
 
-# [Let's get coding](https://houstonusers.github.io/intro-to-ggplot2/workshop.nb)
+# [Let's get coding](./workshop.nb)
