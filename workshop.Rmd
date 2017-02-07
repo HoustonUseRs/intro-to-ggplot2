@@ -293,6 +293,8 @@ Additionally, the grammar includes control over the whole plot's
 
 [R for Data Science: Visualizing Data](http://r4ds.had.co.nz/data-visualisation.html#introduction-1)
 
+[Extending ggplot2](http://docs.ggplot2.org/current/vignettes/extending-ggplot2.html)
+
 [Data Camp: Data Visualization with ggplot2](https://www.datacamp.com/courses/data-visualization-with-ggplot2-1)
 
 [Swirl: Exploratory Data Analysis](http://swirlstats.com/scn/eda.html)
