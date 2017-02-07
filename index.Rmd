@@ -1,24 +1,21 @@
 ---
 title: "Grammar of Graphics in R"
-output: 
-  flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+output:
+  revealjs::revealjs_presentation:
+      highlight: pygments
+      transition: fade
 ---
-
-```{r echo = F}
-library(ggplot2)
-```
 
 # Semiology of Graphics
 
-### *Jacques Bertin, 1967*
+## *Jacques Bertin, 1967*
 
 ![](./images/bertin.jpg)
 
 ![](./images/bertin-cover.jpg)
 
 
-### Retinal Values
+## Retinal Values
 
 ![](./images/bertin-variables.jpg)
 
@@ -32,7 +29,7 @@ library(ggplot2)
   * Orientation
   * Texture
 
-### Types of Imposition
+## Types of Imposition
 
 ![](./images/bertin-imposition.jpg)
 
@@ -47,40 +44,38 @@ library(ggplot2)
 
 # The Grammar of Graphics
 
-### *Leland Wilkinson, 1999*
+## *Leland Wilkinson, 1999*
 
 ![](./images/wilkinson.jpg)
 
 ![](./images/wilkinson-cover.jpg)
 
-### Why a grammar?
+## Why a grammar?
 
 > If we endeavor to develop a charting instead of a graphing program, we will accomplish two things. First, we inevitably will offer fewer charts than people want. Second, our package will have no deep structure. Our computer program will be unnecessarily complex, because **we will fail to reuse objects or routines that function similarly in different charts**. And we will have **no way to add new charts to our system without generating complex new code**. Elegant design requires us to think about a theory of graphics, not charts.
 
-### Pie
+## Pie
 
 ![](./images/pie.jpg)
 
-### How do we specify data...
+## How do we specify data to become graphics?
 
 ![](./images/wilkinson-pie-1.jpg)
-
-### ...to become graphics?
 
 ![](./images/wilkinson-pie-8.jpg)
 
 
 # A Layered Grammar of Graphics
 
-### *Hadley Wickham, begun in 2006*
+## *Hadley Wickham, begun in 2006*
 
 ![](./images/hadley.jpg)
 
-### A layered grammar
+## A layered grammar
 
 ![](./images/hadley-wilkinson.png)
 
-### The essence of a graphic
+## The essence of a graphic
 
   * **data**
   * how data get mapped to **aes**thetic properties such as position, color, and size
@@ -88,217 +83,4 @@ library(ggplot2)
   * any necessary **stat**istical operations, such as count for bar charts
   * how the data points are **position**ed
 
-# Let's get to coding!
-
-We will start with an example where we take `mpg` data and make a scatterplot.
-
-How do we get from this:
-
-### The data
-
-```{r}
-head(mpg)
-```
-
-to this:
-
-### The plot
-
-```{r echo = F}
-mpg_plot <- ggplot(
-    data = mpg,
-    mapping = aes(x = cty, y = hwy)
-  ) +
-  geom_point(
-    mapping = aes(col = factor(cyl))
-  ) +
-  geom_abline(
-    slope = 1,
-    intercept = 0,
-    color = 'black',
-    linetype = 'dotted'
-  ) +
-  scale_color_manual(
-    name = '# of Cyl',
-    values = c('skyblue','royalblue', 'blue', 'navy')
-  ) +
-  coord_fixed(
-    xlim = c(min(mpg$hwy, mpg$cty), max(mpg$hwy, mpg$cty)),
-    ylim = c(min(mpg$hwy, mpg$cty), max(mpg$hwy, mpg$cty))
-  ) +
-  ggtitle('Miles per gallon') +
-  theme_light()
-
-mpg_plot
-```
-
-# Let's plot!
-
-Load the ggplot2 library:
-
-```{r}
-library(ggplot2)
-```
-
-`ggplot` is the base layer.
-
-```{r}
-ggplot()
-```
-
-This is a good place to for us to define our plot's default data.
-
-```{r}
-ggplot(data = mpg)
-```
-
-There isn't much being plotted yet... Let's tell our plot about our mapping, where our `x` will be our `cty` and `y` will be our `hwy`.
-
-```{r}
-ggplot(
-    data = mpg,
-    mapping = aes(x = cty, y = hwy)
-  )
-```
-
-Our plot now has enough information to set some automatic axis limits based on the data.
-
-```{r}
-ggplot(
-    data = mpg,
-    mapping = aes(x = cty, y = hwy)
-  ) +
-  geom_point()
-```
-
-
-
-```{r}
-mpg_plot +
-  facet_grid('.~class')
-```
-
-
-
-
-# The magic behind the `+`
-
-We can discover how the `+` is helping us construct these plots by running:
-
-```{r}
-methods('+')
-```
-
-From the result, we can see that the `+` function is overloaded for objects that match the `gg` namespace.  If we look [at the code](https://github.com/tidyverse/ggplot2/blob/master/R/plot-construction.r#L39) for this function, we learn more about how it works.
-
-
-
-# The makings of a pie
-
-### Grammar-based graphics lends flexibility
-
-Back to Leland Wilkinson's point about making a pie -- that a pie chart is really a stacked bar chart that has been transformed with polar coordinates where the y is mapped to the angle, a.k.a. theta.
-
-### We start with a bar chart:
-
-```{r}
-diamonds_by_cut_base <- ggplot(data = diamonds, mapping = aes(x = cut, fill = cut))
-diamonds_by_cut_base + geom_bar()
-```
-
-Here, we have a stacked bar chart of diamonds grouped by cut.
-
-```{r}
-diamonds_by_cut_stacked <- diamonds_by_cut_base +
-  geom_bar(width = 1, aes(x=factor("")))
-
-diamonds_by_cut_stacked
-```
-
-Taking the bar chart, we simply "add" a `coord_polar` to it.
-
-```{r}
-diamonds_by_cut_stacked +
-  coord_polar()  +
-  scale_x_discrete("")
-```
-
-By default, `coord_polar` maps the `theta` from `x` and the `radius` from `y`.
-
-```{r}
-bullseye_coords <- coord_polar()
-bullseye_coords$theta
-bullseye_coords$r
-```
-
-We need to a `coord_polar` where the `theta` maps from `y`:
-
-```{r}
-pie_coords <- coord_polar(theta = "y")
-pie_coords$theta
-```
-
-Now, we can transform the stacked bar chart to a pie chart:
-
-```{r}
-diamonds_by_cut_stacked +
-  pie_coords
-```
-
-```{r}
-?coord_polar
-```
-
-
-# Let's experiment
-
-```{r}
-source('https://raw.githubusercontent.com/HoustonUseRs/intro-to-ggplot2/master/examples_from_cheatsheet.r')
-```
-
-
-# A layered grammar is powerful
-
-The full grammar consists of:
-  * The base plot with default data and mappings
-  * Any number of layers, each with
-    * Data
-      * plot's data by default
-    * Mapping
-      * plot's mappings by default
-    * Geom
-      * Sometimes defined by default by `stat_` if defined
-    * Stat
-      * Identity by default
-      * Sometimes defined by default by `geom_` if defined
-    * Position
-      * Optional, any adjustments necessary to geom positioning
-Additionally, the grammar includes control over the whole plot's
-  * Scales
-  * Coordinates
-  * Facets
-
-
-# Reading and Sources
-
-[A Layered Grammar of Graphics](http://vita.had.co.nz/papers/layered-grammar.pdf)
-
-[Mastering the Grammar](https://rpubs.com/flowertear/224424)
-
-[R for Data Science: Visualizing Data](http://r4ds.had.co.nz/data-visualisation.html#introduction-1)
-
-[Data Camp: Data Visualization with ggplot2](https://www.datacamp.com/courses/data-visualization-with-ggplot2-1)
-
-[Swirl: Exploratory Data Analysis](http://swirlstats.com/scn/eda.html)
-
-[ggplot2 Cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf)
-
-[Telling stories with data using the grammar of graphics](https://codewords.recurse.com/issues/six/telling-stories-with-data-using-the-grammar-of-graphics)
-
-[ggplot2 source code](https://github.com/tidyverse/ggplot2/tree/master/R)
-
-[ggplot2: Elegant Graphics for Data Analysis](http://ggplot2.org/book/)
-
-[The Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448)
-
-[Semiology of Graphics](https://www.amazon.com/Semiology-Graphics-Diagrams-Networks-Maps/dp/1589482611)
+# [Let's get coding](https://houstonusers.github.io/intro-to-ggplot2/workshop.nb)

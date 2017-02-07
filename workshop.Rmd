@@ -1,0 +1,306 @@
+---
+title: "Grammar of Graphics in R"
+output: html_notebook
+---
+
+```{r load_ggplot, echo = F}
+library(ggplot2)
+```
+
+# Let's get to coding!
+
+We will start with an example where we take `mpg` data and make a scatterplot.
+
+How do we get from this:
+
+## The data
+
+```{r view_data}
+head(mpg)
+```
+
+to this:
+
+## The plot
+
+```{r preview_plot, echo = F}
+mpg_plot <- ggplot(
+    data = mpg,
+    mapping = aes(x = cty, y = hwy)
+  ) +
+  geom_point(
+    mapping = aes(col = factor(cyl))
+  ) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    color = 'black',
+    linetype = 'dotted'
+  ) +
+  coord_fixed(
+    ratio = 1
+  ) +
+  scale_color_manual(
+    name = '# of Cyl',
+    values = c('skyblue','royalblue', 'blue', 'navy')
+  ) +
+  ggtitle('Miles per gallon') +
+  theme_light()
+
+mpg_plot
+```
+
+# Let's plot!
+
+Load the ggplot2 library:
+
+```{r load_library_no_eval, eval = F}
+library(ggplot2)
+```
+
+`ggplot` is the base layer.
+
+```{r step00_base}
+ggplot()
+```
+
+This is a good place to for us to define our plot's default data.
+
+```{r step01_data}
+ggplot(data = mpg)
+```
+
+There isn't much being plotted yet... Let's tell our plot about our mapping, where our `x` will be our `cty` and `y` will be our `hwy`.
+
+```{r step02_mapping}
+ggplot(
+    data = mpg,
+    mapping = aes(x = cty, y = hwy)
+  )
+```
+
+Our plot now has enough information to set some automatic axis limits based on the data.
+
+```{r step03_points}
+ggplot(
+    data = mpg,
+    mapping = aes(x = cty, y = hwy)
+  ) +
+  geom_point()
+```
+
+
+```{r step04_colors}
+ggplot(
+    data = mpg,
+    mapping = aes(x = cty, y = hwy)
+  ) +
+  geom_point(
+    mapping = aes(col = factor(cyl))
+  )
+```
+
+At this point, we have the base of the plot.  We can save this to a variable, `mpg_base_plot`, and make additional adjustments.
+
+```{r step05_assign}
+mpg_base_plot <- ggplot(
+    data = mpg,
+    mapping = aes(x = cty, y = hwy)
+  ) +
+  geom_point(
+    mapping = aes(col = factor(cyl))
+  )
+mpg_base_plot
+```
+
+
+To add the reference line, we add a layer like so:
+
+```{r step06_line}
+mpg_base_plot +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    color = 'black',
+    linetype = 'dotted'
+  )
+```
+
+Note that this geom layer can be added on top of a blank plot.  All `geom_` prefixed functions return an `environment` object that holds onto the information we call it with.
+
+```{r line_layer_example}
+ggplot() +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    color = 'black',
+    linetype = 'dotted'
+  )
+```
+
+Let's continue.  Our plot looks a bit funny -- the grid for the x and y are not 1 to 1.  Let's use a `coord_` function to adjust this:
+
+```{r step07_fixed}
+mpg_base_plot +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    color = 'black',
+    linetype = 'dotted'
+  ) +
+  coord_fixed(ratio = 1)
+```
+
+We can clean up the plot like so:
+
+```{r step08_cleanup}
+mpg_plot <- mpg_base_plot +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    color = 'black',
+    linetype = 'dotted'
+  ) +
+  coord_fixed(ratio = 1) +
+  scale_color_manual(
+    name = '# of Cyl',
+    values = c('skyblue','royalblue', 'blue', 'navy')
+  ) +
+  ggtitle('Miles per gallon') +
+  theme_light()
+mpg_plot
+```
+
+We can further manipulate the plot using things like `facet_`.
+
+```{r facets_example}
+mpg_plot +
+  facet_grid(.~class)
+```
+
+
+# The magic behind the `+`
+
+We can discover how the `+` is helping us construct these plots by running:
+
+```{r what_the_plus}
+methods('+')
+```
+
+From the result, we can see that the `+` function is overloaded for objects that match the `gg` namespace.  If we look [at the code](https://github.com/tidyverse/ggplot2/blob/master/R/plot-construction.r#L39) for this function, we learn more about how it works.
+
+
+# The makings of a pie
+
+### Grammar-based graphics lends flexibility
+
+Back to Leland Wilkinson's point about making a pie -- that a pie chart is really a stacked bar chart that has been transformed with polar coordinates where the y is mapped to the angle, a.k.a. theta.
+
+### We start with a bar chart:
+
+```{r pie00_bar}
+diamonds_by_cut_base <- ggplot(data = diamonds, mapping = aes(x = cut, fill = cut))
+diamonds_by_cut_base +
+  geom_bar()
+```
+
+Here, we have a stacked bar chart of diamonds grouped by cut.
+
+```{r pie01_stacked}
+diamonds_by_cut_stacked <- diamonds_by_cut_base +
+  geom_bar(width = 1, aes(x=factor("")))
+
+diamonds_by_cut_stacked
+```
+
+Taking the bar chart, we simply "add" a `coord_polar` to it.
+
+```{r pie02_bullseye}
+diamonds_by_cut_stacked +
+  coord_polar()  +
+  scale_x_discrete("")
+```
+
+By default, `coord_polar` maps the `theta` from `x` and the `radius` from `y`.
+
+```{r what_is_a_coord_anyway}
+bullseye_coords <- coord_polar()
+bullseye_coords$theta
+bullseye_coords$r
+```
+
+We need to a `coord_polar` where the `theta` maps from `y`:
+
+```{r pie_coords}
+pie_coords <- coord_polar(theta = "y")
+pie_coords$theta
+```
+
+Now, we can transform the stacked bar chart to a pie chart:
+
+```{r pie03_pie}
+diamonds_by_cut_stacked +
+  pie_coords
+```
+
+```{r}
+?coord_polar
+```
+
+
+# Let's experiment
+
+We can get the base plots from the ggplot cheatsheets on our computer by sourcing [this R script](https://houstonusers.github.io/intro-to-ggplot2/examples_from_cheatsheet).
+
+```{r eval = F}
+source('https://goo.gl/3EQSXt')
+```
+
+
+# A layered grammar is powerful
+
+The full grammar consists of:
+  * The base plot with default data and mappings
+  * Any number of layers, each with
+    * Data
+      * plot's data by default
+    * Mapping
+      * plot's mappings by default
+    * Geom
+      * Sometimes defined by default by `stat_` if defined
+    * Stat
+      * Identity by default
+      * Sometimes defined by default by `geom_` if defined
+    * Position
+      * Optional, any adjustments necessary to geom positioning
+Additionally, the grammar includes control over the whole plot's
+  * Scales
+  * Coordinates
+  * Facets
+
+
+# Reading and Sources
+
+[A Layered Grammar of Graphics](http://vita.had.co.nz/papers/layered-grammar.pdf)
+
+[Mastering the Grammar](https://rpubs.com/flowertear/224424)
+
+[Introduction to R Graphics with `ggplot2`](http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html)
+
+[R for Data Science: Visualizing Data](http://r4ds.had.co.nz/data-visualisation.html#introduction-1)
+
+[Data Camp: Data Visualization with ggplot2](https://www.datacamp.com/courses/data-visualization-with-ggplot2-1)
+
+[Swirl: Exploratory Data Analysis](http://swirlstats.com/scn/eda.html)
+
+[ggplot2 Cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf)
+
+[Telling stories with data using the grammar of graphics](https://codewords.recurse.com/issues/six/telling-stories-with-data-using-the-grammar-of-graphics)
+
+[ggplot2 source code](https://github.com/tidyverse/ggplot2/tree/master/R)
+
+[ggplot2: Elegant Graphics for Data Analysis](http://ggplot2.org/book/)
+
+[The Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448)
+
+[Semiology of Graphics](https://www.amazon.com/Semiology-Graphics-Diagrams-Networks-Maps/dp/1589482611)
