@@ -95,7 +95,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
     <style type="text/css">code{white-space: pre;}</style>
 
-    <link href="data:text/css;charset=utf-8,img%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0A%7D%0A%2Ehalf%2Dgrid%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Awidth%3A%2040%25%3B%0Afloat%3A%20left%3B%0A%7D%0A%2Ereveal%20blockquote%20%7B%0Awidth%3A%20100%25%3B%0A%7D%0Adiv%2EsourceCode%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Afloat%3A%20left%3B%0Amargin%2Dleft%3A%20%2D20%25%3B%0Awidth%3A%2080%25%3B%0A%7D%0Adiv%2EsourceCode%20%2B%20p%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Afloat%3A%20left%3B%0Awidth%3A%2060%25%3B%0Amargin%2Dright%3A%20%2D50%25%3B%0A%7D" rel="stylesheet" />
+    <link href="data:text/css;charset=utf-8,img%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0A%7D%0A%2Ehalf%2Dgrid%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Awidth%3A%2040%25%3B%0Afloat%3A%20left%3B%0A%7D%0A%2Ereveal%20blockquote%20%7B%0Awidth%3A%20100%25%3B%0A%7D%0A%2Ereveal%20blockquote%20p%20%7B%0Aline%2Dheight%3A%202%3B%0Afont%2Dsize%3A%200%2E9em%3B%0A%7D%0Adiv%2EsourceCode%20%2B%20p%20img%20%7B%0Awidth%3A%2060%25%3B%0Amargin%3A%20auto%3B%0A%7D" rel="stylesheet" />
     <!-- Printing and PDF exports -->
     <script>
       var link = document.createElement( 'link' );
@@ -192,10 +192,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>These elements form a layer:</p>
 <ul>
 <li><strong>data</strong></li>
-<li>how data get mapped to <strong>aes</strong>thetic properties such as x, y, color, shape, and size</li>
+<li>how data maps to <strong>aes</strong>thetic properties
+<ul>
+<li>i.e. x, y, color, shape, and size</li>
+</ul></li>
 <li>what <strong>geom</strong>etric element is representing the data</li>
-<li>any necessary <strong>stat</strong>istical operations, such as count for bar charts</li>
-<li>how the data points are <strong>position</strong>ed</li>
+<li>any <strong>stat</strong>istical transformations on data
+<ul>
+<li>i.e. count for bar charts</li>
+</ul></li>
+<li><strong>position</strong> adjustments</li>
 </ul>
 </section><section id="layered-plot" class="slide level2">
 <h1>Layered plot</h1>

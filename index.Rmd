@@ -98,10 +98,12 @@ ggplot(
 These elements form a layer:
 
   * **data**
-  * how data get mapped to **aes**thetic properties such as x, y, color, shape, and size
+  * how data maps to **aes**thetic properties
+      * i.e. x, y, color, shape, and size
   * what **geom**etric element is representing the data
-  * any necessary **stat**istical operations, such as count for bar charts
-  * how the data points are **position**ed
+  * any **stat**istical transformations on data
+      * i.e. count for bar charts
+  * **position** adjustments
 
 ## Layered plot
 

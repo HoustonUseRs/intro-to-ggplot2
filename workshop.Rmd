@@ -198,6 +198,37 @@ methods('+')
 
 From the result, we can see that the `+` function is overloaded for objects that match the `gg` namespace.  If we look [at the code](https://github.com/tidyverse/ggplot2/blob/master/R/plot-construction.r#L39) for this function, we learn more about how it works.
 
+## Object-oriented
+
+We can explore more of how `ggplot` works underneath by looking at:
+
+```{r}
+base_plot <- ggplot()
+names(base_plot)
+```
+
+It's an object that can be mutated.  Other functions output objects as well.
+
+```{r}
+mpg_mapping <- aes(x = cty, y = hwy)
+mpg_mapping
+```
+
+Let's mutate the `base_plot`:
+
+```{r}
+base_plot$data <- mpg
+base_plot$mapping <- mpg_mapping
+base_plot$layers <- c(base_plot$layers, geom_point())
+base_plot
+```
+
+
+## Extensibility
+
+You can also create custom `stat_`s, `geom_`s, and `theme_`s as needed.  This [vignette](http://docs.ggplot2.org/current/vignettes/extending-ggplot2.html) explains the object-oriented patterns for ggplot2, and how to extend the library for your needs.
+
+There's actually a lot we can learn from [the source code](https://github.com/tidyverse/ggplot2/tree/master/R), such as all possible [`aes` parameters](https://github.com/tidyverse/ggplot2/blob/master/R/aes.r#L4-L8).
 
 # The makings of a pie
 
@@ -294,6 +325,8 @@ Additionally, the grammar includes control over the whole plot's
 [R for Data Science: Visualizing Data](http://r4ds.had.co.nz/data-visualisation.html#introduction-1)
 
 [Extending ggplot2](http://docs.ggplot2.org/current/vignettes/extending-ggplot2.html)
+
+[The R Graph Gallery](http://www.r-graph-gallery.com/portfolio/ggplot2-package/)
 
 [Data Camp: Data Visualization with ggplot2](https://www.datacamp.com/courses/data-visualization-with-ggplot2-1)
 
